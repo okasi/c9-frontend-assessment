@@ -13,7 +13,7 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 260
   },
@@ -31,7 +31,7 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 280
   },
@@ -49,7 +49,7 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 300
   },
@@ -67,7 +67,7 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 320
   },
@@ -85,7 +85,7 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 350
   },
@@ -103,9 +103,8 @@ export default [
     },
     phone: "08-321 321 32",
     description: "Such beauty, many hair, much wow.",
-    website: "www.keratania.com",
+    website: "www.interhair.com",
     duration: 30,
     price: 400
-  },
-
+  }
 ];
