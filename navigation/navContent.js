@@ -17,9 +17,7 @@ export default [
     defaultNavigationOptions: {
       headerTitleStyle: {
         fontFamily: "miller-banner",
-        fontWeight: "bold",
-        textAlign: "center",
-        flexGrow: 1
+        fontWeight: "bold"
       }
     }
   }
