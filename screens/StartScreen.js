@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Picker } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { MillerText } from "../components/StyledText";
 import { renderFilledStars, renderOutlineStars } from "../utils/renderStars";
@@ -8,81 +8,107 @@ import getSaloons from "../api";
 import Constants from "expo-constants";
 import Colors from "../constants/Colors";
 
+let toggleFilterBool = false;
+function toggleFilter() {
+  toggleFilterBool = !toggleFilterBool;
+  // alert(toggleFilterBool);
+}
+
 export default function StartScreen() {
   const [saloons, setSaloons] = useState({});
   useEffect(() => {
     (async function() {
       let data = await getSaloons();
       setSaloons(data);
-      // console.log(data);
     })();
   }, []);
+
+  // const [toggleFilterBool, setToggleFilterBool] = useState(false);
+
+  const [filterInterval, setFilterInterval] = useState(0);
 
   return (
     <View>
       <ScrollView>
+        <Picker
+          style={{ marginTop: 10 }}
+          onValueChange={itemValue => setFilterInterval(itemValue)}
+        >
+          <Picker.Item label="0 - ∞" value="0" />
+          <Picker.Item label="0 - 300 SEK" value="300" />
+          <Picker.Item label="0 - 350 SEK" value="350" />
+        </Picker>
         {saloons.length > 0 &&
           saloons.map(saloon => {
-            return (
-              <>
-                <TouchableOpacity
-                  onPress={() =>
-                    NavigationService.navigate("Detail", { name: saloon.name })
-                  }
-                >
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      paddingTop: 12.5,
-                      paddingBottom: 5,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: Colors.tintColor
-                    }}
+            if (filterInterval == 0 || saloon.price <= filterInterval) {
+              return (
+                <View key={saloon.name}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      NavigationService.navigate("Detail", {
+                        name: saloon.name
+                      })
+                    }
                   >
-                    <View style={{ width: "20%" }}>
-                      <Text>
-                        {saloon.time.open} - {saloon.time.close}
-                      </Text>
-                    </View>
-
-                    <View style={{ width: "60%" }}>
-                      <Text>
-                        <MillerText style={{ fontSize: 18 }}>
-                          {saloon.name}
-                        </MillerText>
-                        {"\n"}
-                        {renderFilledStars(saloon.avgRating)}
-                        {renderOutlineStars(saloon.avgRating)}
-                        <Text style={{ fontWeight: "100", fontSize: 11 }}>
+                    <View
+                      style={{
+                        // display: "flex",
+                        flexDirection: "row",
+                        paddingTop: 12.5,
+                        paddingBottom: 5,
+                        borderBottomWidth: 0.5,
+                        borderBottomColor: Colors.tintColor
+                      }}
+                    >
+                      <View style={{ width: "20%" }}>
+                        <Text>
                           {" "}
-                          ({saloon.ratings})
+                          {saloon.time.open}
+                          {"\n"} -{"\n"} {saloon.time.close}
                         </Text>
-                        {"\n"}
-                        <Text style={{ fontWeight: "200" }}>
-                          {saloon.address.street}
-                        </Text>
-                      </Text>
-                    </View>
+                      </View>
 
-                    <View style={{ width: "15%" }}>
-                      <Text>
-                        {saloon.price} kr
-                        {"\n"}
-                        {"\n"}
-                        <Text style={{ fontWeight: "100", fontSize: 11 }}>
-                          {saloon.duration} min
+                      <View style={{ width: "60%" }}>
+                        <Text>
+                          <MillerText style={{ fontSize: 18 }}>
+                            {saloon.name}
+                          </MillerText>
+                          {"\n"}
+                          {renderFilledStars(saloon.avgRating)}
+                          {renderOutlineStars(saloon.avgRating)}
+                          <Text style={{ fontWeight: "100", fontSize: 11 }}>
+                            {" "}
+                            ({saloon.ratings})
+                          </Text>
+                          {"\n"}
+                          <Text style={{ fontWeight: "200" }}>
+                            {saloon.address.street}
+                          </Text>
                         </Text>
-                      </Text>
-                    </View>
+                      </View>
 
-                    <View style={{ width: "5%", alignSelf: "center" }}>
-                      <Feather name="chevron-right" color={Colors.tintColor} />
+                      <View style={{ width: "15%" }}>
+                        <Text>
+                          {saloon.price} kr
+                          {"\n"}
+                          {"\n"}
+                          <Text style={{ fontWeight: "100", fontSize: 11 }}>
+                            {saloon.duration} min
+                          </Text>
+                        </Text>
+                      </View>
+
+                      <View style={{ width: "5%", alignSelf: "center" }}>
+                        <Feather
+                          name="chevron-right"
+                          color={Colors.tintColor}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              </>
-            );
+                  </TouchableOpacity>
+                </View>
+              );
+            }
           })}
       </ScrollView>
     </View>
@@ -91,4 +117,17 @@ export default function StartScreen() {
 
 StartScreen.navigationOptions = {
   title: Constants.manifest.name
+
+  // Figure this out without any statehandler
+
+  // headerRight: (
+  //   <Ionicons
+  //     name="ios-options"
+  //     size={21}
+  //     style={{
+  //       paddingRight: 10
+  //     }}
+  //     onPress={() => toggleFilter()}
+  //   ></Ionicons>
+  // )
 };

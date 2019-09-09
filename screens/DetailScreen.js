@@ -5,7 +5,8 @@ import {
   Text,
   Image,
   View,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import NavigationService from "../utils/NavigationService";
@@ -13,7 +14,6 @@ import getSaloons from "../api";
 import { MillerText } from "../components/StyledText";
 import { renderFilledStars, renderOutlineStars } from "../utils/renderStars";
 import Colors from "../constants/Colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { EvilIcons, Feather, Ionicons } from "@expo/vector-icons";
 
 export default function DetailScreen() {
@@ -29,6 +29,8 @@ export default function DetailScreen() {
       });
     })();
   }, []);
+
+  const [infoOrSchema, setInfoOrSchema] = useState("info");
 
   return (
     <ScrollView>
@@ -64,92 +66,118 @@ export default function DetailScreen() {
       <View
         style={{
           padding: 10,
-          display: "flex",
+          // display: "flex",
           flexDirection: "row",
           justifyContent: "center"
         }}
       >
         <View
-          style={{
-            width: "50%",
-            paddingBottom: 10,
-            borderBottomWidth: 1.5,
-            borderBottomColor: Colors.tintColor
-          }}
+          style={[
+            {
+              width: "50%",
+              paddingBottom: 10
+            },
+            infoOrSchema == "info" ? styles.touchableActive : null
+          ]}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setInfoOrSchema("info");
+            }}
+          >
             <Text style={{ textAlign: "center" }}>Info</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: "50%", paddingBottom: 10 }}>
-          <TouchableOpacity>
+        <View
+          style={[
+            {
+              width: "50%",
+              paddingBottom: 10
+            },
+            infoOrSchema == "schema" ? styles.touchableActive : null
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              setInfoOrSchema("schema");
+            }}
+          >
             <Text style={{ textAlign: "center" }}>Schema</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Location */}
-      <View style={styles.infoItem}>
-        <EvilIcons name="location" size={31}></EvilIcons>
-        <Text style={styles.infoItemText}>
-          {saloon.address && saloon.address.street},{" "}
-          {saloon.address && saloon.address.city}
-        </Text>
-      </View>
+      {infoOrSchema == "info" && (
+        <>
+          <View style={styles.infoItem}>
+            <EvilIcons name="location" size={31}></EvilIcons>
+            <Text style={styles.infoItemText}>
+              {saloon.address && saloon.address.street},{" "}
+              {saloon.address && saloon.address.city}
+            </Text>
+          </View>
 
-      {/* Time */}
-      <View style={styles.infoItem}>
-        <EvilIcons name="clock" size={31}></EvilIcons>
-        <Text style={styles.infoItemText}>
-          Öppet till {saloon.time && saloon.time.close} idag{" "}
-          <EvilIcons
-            name="chevron-down"
-            color={Colors.tintColor}
-            size={31}
-          ></EvilIcons>
-        </Text>
-      </View>
+          <View style={styles.infoItem}>
+            <EvilIcons name="clock" size={31}></EvilIcons>
+            <Text style={styles.infoItemText}>
+              Öppet till {saloon.time && saloon.time.close} idag{" "}
+              <EvilIcons
+                name="chevron-down"
+                color={Colors.tintColor}
+                size={25}
+              ></EvilIcons>
+            </Text>
+          </View>
 
-      {/* Phone */}
-      <View style={styles.infoItem}>
-        <Feather name="phone" size={21} style={{ paddingLeft: 6 }}></Feather>
-        <Text style={{ ...styles.infoItemText, paddingLeft: 12 }}>
-          {saloon.phone}
-        </Text>
-      </View>
+          <View style={styles.infoItem}>
+            <Feather
+              name="phone"
+              size={21}
+              style={{ paddingLeft: 6 }}
+            ></Feather>
+            <Text style={[styles.infoItemText, { paddingLeft: 12 }]}>
+              {saloon.phone}
+            </Text>
+          </View>
 
-      {/* Webpage */}
-      <View style={styles.infoItem}>
-        <Ionicons
-          name="ios-globe"
-          size={25}
-          style={{ paddingLeft: 6 }}
-        ></Ionicons>
-        <Text style={{ ...styles.infoItemText, paddingLeft: 12 }}>
-          {saloon.website}
-        </Text>
-      </View>
+          <View style={styles.infoItem}>
+            <Ionicons
+              name="ios-globe"
+              size={25}
+              style={{ paddingLeft: 6 }}
+            ></Ionicons>
+            <Text style={[styles.infoItemText, { paddingLeft: 12 }]}>
+              {saloon.website}
+            </Text>
+          </View>
 
-      {/* Description */}
-      <View style={{ ...styles.infoItem, borderBottomWidth: 0 }}>
-        <Text style={{ ...styles.infoItemText, fontSize: 14 }}>
-          {saloon.description}
-        </Text>
-      </View>
+          <View style={[styles.infoItem, { borderBottomWidth: 0 }]}>
+            <Text style={[styles.infoItemText, { fontSize: 14 }]}>
+              {saloon.description}
+            </Text>
+          </View>
+        </>
+      )}
 
-      <Button
-        onPress={() => {
-          WebBrowser.openBrowserAsync("https://calendly.com/");
-        }}
-        title="Book now"
-      ></Button>
+      <Text>{"\n"}</Text>
+
+      {infoOrSchema == "schema" && (
+        <>
+          <Button
+            onPress={() => {
+              WebBrowser.openBrowserAsync("https://calendly.com/");
+            }}
+            title="Book now"
+          ></Button>
+        </>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   infoItem: {
-    display: "flex",
+    // display: "flex",
     flexDirection: "row",
     borderBottomWidth: 0.5,
     borderBottomColor: "lightgrey",
@@ -158,10 +186,16 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 0
   },
+
   infoItemText: {
     paddingLeft: 7,
     fontSize: 19,
     fontWeight: "300"
+  },
+
+  touchableActive: {
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.tintColor
   }
 });
 

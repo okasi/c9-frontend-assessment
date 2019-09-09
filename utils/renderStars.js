@@ -1,14 +1,22 @@
-import React from 'react'
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 export function renderFilledStars(stars) {
-  return (
-    Array(stars).fill(<Ionicons name="ios-star" color={Colors.tintColor} />)
-  )
+  let arr = Array(stars);
+
+  for (let i = 0; i < stars; i++) {
+    arr.push(<Ionicons name="ios-star" key={i} color={Colors.tintColor} />);
+  }
+  return arr;
 }
 export function renderOutlineStars(stars) {
-  return (
-    Array(5 - stars).fill(<Ionicons name="ios-star-outline" color={Colors.tintColor} />)
-  )
+  let arr = Array(5 - stars);
+
+  for (let i = 0; i < 5 - stars; i++) {
+    arr.push(
+      <Ionicons name="ios-star-outline" key={i} color={Colors.tintColor} />
+    );
+  }
+  return arr;
 }
